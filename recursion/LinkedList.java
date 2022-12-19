@@ -18,6 +18,8 @@ public class LinkedList {
      * Constructs a new, empty linked list.
      */
     public LinkedList() {
+        // linked list is currently empty since
+        // both head and tail nodes are pointing to null
         head = null;
         tail = null;
     }
@@ -27,8 +29,14 @@ public class LinkedList {
      * @param data The new value to add at the head of the list
      */
     public void addFirst(final Double data) {
+        // instantiates a new node initialized with
+        // passed in data, and current head node as the next node
         Node newHead = new Node(data, head);
+        // reassign head node to point to this new node
         head = newHead;
+        // if tail node points to null (this means there is only
+        // one node in the current instance of linked list
+        // so reassign tail node to point to this new node as well
         if (tail == null) {
             tail = newHead;
         }
