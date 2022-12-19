@@ -1,8 +1,5 @@
 package recursion;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -81,7 +78,6 @@ public class LinkedList {
      * Returns the value of the Nth element in the list (zero-indexed).
      * Throws IndexOutOfBoundsException if n is size of list or
      * greater, or if n is negative.
-     *
      * We normally would not want to call this method often on a linked
      * list because it is O(n), but this might be helpful for your
      * reverse() unit tests.
@@ -108,9 +104,9 @@ public class LinkedList {
      * Add the collection's data values to the end of the list.
      * @param collection The collection of Double to add to the list
      */
-    public void addAll(final Collection<Double> collection) {
-        for (Double data : collection) {
-            addLast(data);
+    public void addAll(final LinkedList collection) {
+        for (int i = 0; i < collection.size(); i++) {
+            addLast(collection.get(i));
         }
     }
 
@@ -125,15 +121,20 @@ public class LinkedList {
     }
 
     private Double sumRecursive(Node head) {
+        // if current instance of linked list is an empty list
         if (head == null) {
             return 0.0;
         }
 
+        // otherwise, extract value from the head node
+        // of current instance of linked list, and sum that
+        // to the value in the next node of current instance of
+        // linked list
         return head.getData() + sumRecursive(head.getNext());
     }
 
 /**
- * Creates a new AtaLinkedList that has all of the values of this
+ * Creates a new AtaLinkedList that has all the values of this
  * AtaLinkedList in reverse order.
  * @return a new reverse order list
  */
@@ -145,11 +146,23 @@ public LinkedList reverse() {
 }
 
 private LinkedList reverseRecursive(Node head) {
+    // if the passed in node is null, then we've
+    // reached the end of the current instance of
+    // linked list
     if (head == null) {
         return new LinkedList();
     }
 
+    // keep stepping through current instance of linked list
     LinkedList reversedList = reverseRecursive(head.getNext());
+    // once we've reached the end of the current instance
+    // of linked list, which means we hit the base case
+    // of `head == null`, where we are given a new instance
+    // of an empty linked list, then we start traversing
+    // the callstack backward as we pop each stack frame
+    // off the stack.
+    // Then we add the passed in node's data to the end
+    // of the list by calling `LinkedList#addLast()`
     reversedList.addLast(head.getData());
     return reversedList;
 }
@@ -165,17 +178,21 @@ private LinkedList reverseRecursive(Node head) {
     }
 
     private int sizeRecursive(Node head) {
+        // if current instance of linked list is an empty list
         if (head == null) {
+            // pops the stack frame off the stack
             return 0;
         }
 
+        // increment size of sublist by one
         return 1 + sizeRecursive(head.getNext());
     }
 
     // EXTENSION
     /**
-     * Determines if the list contains a node with a double equal
-     * to the number specified.
+     * Determines if the list contains a node with a double value
+     * that equals the double value passed in as argument
+     * to the method call.
      * @param number to check for in the list
      * @return true, if the list contains the number.
      */
@@ -184,13 +201,22 @@ private LinkedList reverseRecursive(Node head) {
     }
 
     private boolean containsRecursive(Node head, Double number) {
+        // if current instance of linked list is an empty list,
+        // or we've reached the end of current instance of
+        // linked list
         if (head == null) {
             return false;
         }
 
+        // if the double value contained in the passed-in
+        // node equals the double value passed in as argument
+        // to the method call
         if (head.getData().equals(number)) {
             return true;
         } else {
+            // otherwise, check if the next node contains
+            // the double value that equals the double value
+            // passed in to the method call
             return containsRecursive(head.getNext(), number);
         }
     }
@@ -240,13 +266,23 @@ private LinkedList reverseRecursive(Node head) {
     // EXTENSION
     @Override
     public int hashCode() {
-        List<Double> values = new ArrayList<>();
-        Node node = head;
-        while (node != null) {
-            values.add(node.getData());
-            node = node.getNext();
+//        List<Double> values = new ArrayList<>();
+//        Node node = head;
+//        while (node != null) {
+//            values.add(node.getData());
+//            node = node.getNext();
+//        }
+
+        return hashCodeRecursive(head);
+    }
+
+    private int hashCodeRecursive(Node node) {
+        if (node == null) {
+            return 0;
         }
-        return Objects.hash(values.toArray());
+
+        // Question: how many hash codes do we end up having?
+        return Objects.hash(node.getData(), hashCodeRecursive(node.getNext()));
     }
 
     // EXTENSION
@@ -261,37 +297,55 @@ private LinkedList reverseRecursive(Node head) {
         }
 
         LinkedList other = (LinkedList) o;
-        Node thisNode = this.head;
-        Node otherNode = other.head;
-        while (thisNode != null && otherNode != null) {
-            if (!thisNode.getData().equals(otherNode.getData())) {
-                return false;
-            }
-            thisNode = thisNode.getNext();
-            otherNode = otherNode.getNext();
+//        Node thisNode = this.head;
+//        Node otherNode = other.head;
+//        while (thisNode != null && otherNode != null) {
+//            if (!thisNode.getData().equals(otherNode.getData())) {
+//                return false;
+//            }
+//            thisNode = thisNode.getNext();
+//            otherNode = otherNode.getNext();
+//        }
+
+        return equalsRecursive(this.head, other.head);
+    }
+
+    private boolean equalsRecursive(Node thisNode, Node otherNode) {
+        if (thisNode == null || otherNode == null) {
+            return false;
         }
 
-        if (thisNode == null && otherNode == null) {
-            return true;
+        if (!thisNode.getData().equals(otherNode.getData())) {
+            return false;
         }
 
-        return false;
+        return equalsRecursive(thisNode.getNext(), otherNode.getNext());
     }
 
     // EXTENSION
     @Override
     public String toString() {
-        Node node = head;
-        StringBuilder stringBuilder = new StringBuilder("[");
+//        Node node = head;
+//        StringBuilder stringBuilder = new StringBuilder("[");
+//
+//        while (node != null) {
+//            stringBuilder.append(node.getData())
+//                .append(", ");
+//            node = node.getNext();
+//        }
+//        stringBuilder.append("]");
+//
+//        return stringBuilder.toString();
 
-        while (node != null) {
-            stringBuilder.append(node.getData())
-                .append(", ");
-            node = node.getNext();
+        return String.format("[%s]", toStringRecursive(head));
+    }
+
+    private String toStringRecursive(Node node) {
+        if (node == null) {
+            return "";
         }
-        stringBuilder.append("]");
 
-        return stringBuilder.toString();
+        return String.format("%.4f, %s", node.getData(), toStringRecursive(node.getNext()));
     }
 
     public static void main(String[] args) {
@@ -305,7 +359,7 @@ private LinkedList reverseRecursive(Node head) {
         System.out.println(linkedList1);
 
         Double sum = linkedList1.sum();
-        System.out.println(sum);
+        System.out.printf("%.4f%n", sum);
 
         System.out.println(linkedList1.reverse());
         System.out.println(linkedList1.size());
@@ -315,16 +369,19 @@ private LinkedList reverseRecursive(Node head) {
 
         LinkedList linkedList2 = new LinkedList();
         final Random RANDOM = new Random();
+        linkedList2.addFirst(2.2 + RANDOM.nextDouble());
+        linkedList2.addFirst(3.1 + RANDOM.nextDouble());
+        linkedList2.addFirst(2.2 + RANDOM.nextDouble());
         linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
-        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(2.2 + RANDOM.nextDouble());
+        linkedList2.addFirst(2.5 + RANDOM.nextDouble());
+        linkedList2.addFirst(2.2 + RANDOM.nextDouble());
+        linkedList2.addFirst(2.2 + RANDOM.nextDouble());
         System.out.println(linkedList2);
-        System.out.println(
-            String.format("%.3f", linkedList2.max()));
+
+        linkedList2.addAll(linkedList1);
+        System.out.println(linkedList2);
+        System.out.printf("%.4f%n", linkedList2.getFirst());
+        System.out.printf("%.4f%n", linkedList2.max());
     }
 }
