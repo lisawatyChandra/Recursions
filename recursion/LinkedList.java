@@ -47,13 +47,23 @@ public class LinkedList {
      * @param data The new value to add at the tail of the list
      */
     public void addLast(final Double data) {
+        // instantiates a new node initialized with passed in data
+        // and null as its next node
         Node node = new Node(data, null);
 
+        // if current instance of linked list is an empty list,
+        // which means its head node is null, and by extension
+        // its tail  node is also null, then reassign head node
+        // to this new node, and reassign tail node to the same
+        // new node that head node was reassigned to
         if (head == null) {
             head = node;
             tail = head;
         } else {
+            // otherwise, assign this new node as the new tail node
+            // by calling `Node#setNext()` on the current tail node
             tail.setNext(node);
+            // then, reassign tail node to point to the new tail node
             tail = tail.getNext();
         }
     }
