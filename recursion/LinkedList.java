@@ -143,7 +143,15 @@ private LinkedList reverseRecursive(Node head) {
      * @return size of the linked list
      */
     public int size() {
-        throw new UnsupportedOperationException();
+        return sizeRecursive(head);
+    }
+
+    private int sizeRecursive(Node head) {
+        if (head == null) {
+            return 0;
+        }
+
+        return 1 + sizeRecursive(head.getNext());
     }
 
     // EXTENSION
@@ -154,7 +162,19 @@ private LinkedList reverseRecursive(Node head) {
      * @return true, if the list contains the number.
      */
     public boolean contains(Double number) {
-        throw new UnsupportedOperationException();
+        return containsRecursive (head, number);
+    }
+
+    private boolean containsRecursive(Node head, Double number) {
+        if (head == null) {
+            return false;
+        }
+
+        if (head.getData().equals(number)) {
+            return true;
+        } else {
+            return containsRecursive(head.getNext(), number);
+        }
     }
 
     // EXTENSION
@@ -163,7 +183,40 @@ private LinkedList reverseRecursive(Node head) {
      * @return The max double in the list.
      */
     public Double max() {
-        throw new UnsupportedOperationException();
+        return maxRecursive(head.getData(), head.getNext());
+    }
+
+    private Double maxRecursive(Double thisNodeData, Node nextNode) {
+        // assume current node's data is the max value
+        Double maxDouble = thisNodeData;
+
+        // when next node is null, this means either
+        // current node is the only node in the linked list,
+        // in which case return current node's value as the max value,
+        // or we've reached the end of the linked list, in which case
+        // return the value currently stored in the max
+        // local variable
+        if (nextNode == null) {
+            return maxDouble;
+        }
+
+        // if next node's value is greater than the value
+        // currently stored in the max local variable
+        // reassign the max local variable to point
+        // to next node's value
+        if (nextNode.getData() > maxDouble) {
+            maxDouble = nextNode.getData();
+            // then continue to step through subsequent nodes
+            // after having updated current max value
+            maxRecursive(maxDouble, nextNode.getNext());
+        }
+
+        // otherwise, continue to step through subsequent nodes
+        // in the linked list with current max value
+        // until either next node is null
+        // or next node's value is greater than the current max value
+        // in which case the second if condition will execute
+        return maxRecursive(maxDouble, nextNode.getNext());
     }
 
     // EXTENSION
@@ -224,19 +277,36 @@ private LinkedList reverseRecursive(Node head) {
     }
 
     public static void main(String[] args) {
-        LinkedList linkedList = new LinkedList();
+        LinkedList linkedList1 = new LinkedList();
 
-        final Random RANDOM = new Random();
         // double value = RANDOM.nextDouble();
-        linkedList.addFirst(1.1);
-        linkedList.addFirst(2.2);
-        linkedList.addFirst(3.3);
+        linkedList1.addFirst(1.1);
+        linkedList1.addFirst(3.3);
+        linkedList1.addFirst(2.2);
 
-        System.out.println(linkedList);
+        System.out.println(linkedList1);
 
-        Double sum = linkedList.sum();
+        Double sum = linkedList1.sum();
         System.out.println(sum);
 
-        System.out.println(linkedList.reverse());
+        System.out.println(linkedList1.reverse());
+        System.out.println(linkedList1.size());
+        System.out.println(linkedList1.contains(3.6));
+        System.out.println(linkedList1.contains(3.3));
+
+
+        LinkedList linkedList2 = new LinkedList();
+        final Random RANDOM = new Random();
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        linkedList2.addFirst(RANDOM.nextDouble());
+        System.out.println(linkedList2);
+        System.out.println(
+            String.format("%.3f", linkedList2.max()));
     }
 }
